@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="three" width="800px" height="600px" ></canvas>
+</body>
+<script src="http://cdn.bootcss.com/three.js/r83/three.js"></script>
+<script>
+  const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('three')
+  })
+  renderer.setClearColor(0x666666)
+  const scene = new THREE.Scene()
+
+  // 照相机
+  const camera = new THREE.OrthographicCamera(-2, 2, 1.5, -1.5, 1, 10)
+  camera.position.set(5, 2, 4)
+  camera.lookAt(new THREE.Vector3(0, 0, 0))
+  scene.add(camera)
+  // 车体 -- 长方体
+  const cube = new THREE.Mesh(new THREE.BoxGeometry( 2, 1, 1 ),
+    new THREE.MeshLambertMaterial({
+      color: 0xffffff
+    })
+  )
+  scene.add(cube)
+  // 车轮
+  function creatTorus () {
+    return new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.06, 24, 100),
+      new THREE.MeshPhongMaterial({
+        color: 0xffffff
+      })
+    )
+  }
+  const torusLeft = creatTorus()
+  torusLeft.position.set(-0.7, -0.45, 0.5)
+  scene.add(torusLeft)
+  const torusRight = creatTorus()
+  torusRight.position.set(0.7, -0.45, 0.5)
+  scene.add(torusRight)
+  // 光源
+  const light = new THREE.DirectionalLight(0xffffff)
+  light.position.set(5, 6, 4)
+  scene.add(light)
+  // 渲染
+  renderer.render(scene, camera)
+</script>
+</html>
