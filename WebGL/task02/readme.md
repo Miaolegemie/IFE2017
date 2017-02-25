@@ -62,4 +62,6 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
 ## 注意事项
 
-羡辙女神的文档中，光与影 这一节有些 API 已经修改，详情请参考[文档](https://threejs.org/docs/index.html#Reference/Lights.Shadows/LightShadow)
+1. 羡辙女神的文档中，光与影 这一节有些 API 已经修改，详情请参考[文档](https://threejs.org/docs/index.html#Reference/Lights.Shadows/LightShadow)
+
+2. 在旋转平面时，由于默认是只渲染 **正面**，因此需要将平面旋转 270°，即 3/2(rad) 才可。同时，旋转是使用左手的顺序进行
