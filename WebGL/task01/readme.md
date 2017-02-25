@@ -4,6 +4,8 @@
 
 [任务地址](http://ife.baidu.com/course/detail/id/18)
 
+[实现效果](https://miaolegemie.github.io/IFE2017/WebGL/task01/task01.html)
+
 实现一个简单的小车模型
 
 ## [《Three.js 入门指南》](http://www.ituring.com.cn/article/47975) 中一些注意事项
