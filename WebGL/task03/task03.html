@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="three" width="800px" height="600px" ></canvas>
+</body>
+<script src="https://cdn.bootcss.com/three.js/r83/three.js"></script>
+<script>
+  // 加载器
+  const loader = new THREE.TextureLoader()
+
+  const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('three')
+  })
+  renderer.setClearColor(0x666666)
+  // 阴影
+  renderer.shadowMap.enabled = true
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap
+  const scene = new THREE.Scene()
+
+  // 照相机
+  const camera = new THREE.OrthographicCamera(-2, 2, 1.5, -1.5, 1, 10)
+  camera.position.set(5, 2, 4)
+  camera.lookAt(new THREE.Vector3(0, 0, 0))
+  scene.add(camera)
+  // 车体 -- 长方体
+  const cube = new THREE.Mesh(new THREE.BoxGeometry(2, 1, 1, 200, 100, 100),
+    new THREE.MeshLambertMaterial({
+      color: 0xffffff
+    })
+  )
+  cube.castShadow = true
+  scene.add(cube)
+  // 车轮
+  function creatTorus () {
+    return new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.06, 24, 100),
+      new THREE.MeshPhongMaterial({
+        color: 0xffffff
+      })
+    )
+  }
+  const torusLeft = creatTorus()
+  torusLeft.position.set(-0.7, -0.45, 0.5)
+  torusLeft.receiveShadow = true
+  torusLeft.castShadow = true
+  scene.add(torusLeft)
+  const torusRight = creatTorus()
+  torusRight.position.set(0.7, -0.45, 0.5)
+  torusRight.receiveShadow = true
+  torusRight.castShadow = true
+  scene.add(torusRight)
+  // 平面
+  loader.load('./plane.jpg', function (texture) {
+    const plane = new THREE.Mesh(new THREE.PlaneGeometry(4, 6, 80, 120),
+      new THREE.MeshPhongMaterial({
+        color: 0x97ff72,
+        side: THREE.BackSide,
+        map: texture
+      })
+    )
+    plane.position.set(0, -0.675, 1)
+    plane.rotateX(Math.PI/2)
+    plane.receiveShadow = true
+    scene.add(plane)
+    renderer.render(scene, camera)
+  })
+  // 光源
+  const light = new THREE.SpotLight(0xffffff, 1, 100, Math.PI / 6, 25)
+  light.position.set(-1.5, 6, 12)
+    // 光源阴影
+  light.castShadow = true
+  light.shadow.camera.near = 1
+  light.shadow.camera.far = 1000
+  light.shadow.camera.visible = true
+  light.shadow.camera.fov = 30
+  light.shadow.mapSize.Width = 1024
+  light.shadow.mapSize.Height = 1024
+
+  scene.add(light)
+
+  // 渲染
+  renderer.render(scene, camera)
+</script>
+</html>
