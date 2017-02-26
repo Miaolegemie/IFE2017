@@ -32,7 +32,7 @@
   // 车体 -- 长方体
   const materials = []
   for (let i = 1; i <= 6; i++) {
-    materials.push(new THREE.MeshPhongMaterial({
+    materials.push(new THREE.MeshStandardMaterial({
       map: loader.load('./car' + i +'.jpg', function(texture) {
           renderer.render(scene, camera)
           return texture
