@@ -40,7 +40,7 @@
   // })
   for (let i = 1; i <= 6; i++) {
     materials.push(new THREE.MeshLambertMaterial({
-      map: loader.load(`./car${i}.jpg`, function(texture) {
+      map: loader.load('./car' + i +'.jpg', function(texture) {
           renderer.render(scene, camera)
           return texture
         })
