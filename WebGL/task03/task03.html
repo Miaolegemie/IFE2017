@@ -47,7 +47,7 @@
   // 车轮
   function creatTorus () {
     return new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.06, 24, 100),
-      new THREE.MeshLambertMaterial({
+      new THREE.MeshStandardMaterial({
         color: 0xffffff
       })
     )
@@ -64,7 +64,7 @@
   scene.add(torusRight)
   // 平面
   const plane = new THREE.Mesh(new THREE.PlaneGeometry(4, 6, 80, 120),
-    new THREE.MeshPhongMaterial({
+    new THREE.MeshStandardMaterial({
       color: 0x97ff72,
       side: THREE.BackSide
     })
