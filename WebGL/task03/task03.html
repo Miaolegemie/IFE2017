@@ -42,11 +42,12 @@
     materials.push(new THREE.MeshLambertMaterial({
       map: loader.load('./car' + i +'.jpg', function(texture) {
           renderer.render(scene, camera)
+          return texture
         })
     }))
   }
   const cube = new THREE.Mesh(new THREE.BoxGeometry(2, 1, 1, 200, 100, 100),
-    new THREE.MeshLambertMaterial(materials)
+    new THREE.MultiMaterial(materials)
   )
   cube.castShadow = true
   scene.add(cube)
