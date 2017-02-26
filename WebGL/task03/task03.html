@@ -32,7 +32,7 @@
   // 车体 -- 长方体
   const materials = []
   for (let i = 1; i <= 6; i++) {
-    materials.push(new THREE.MeshStandardMaterial({
+    materials.push(new THREE.MeshLambertMaterial({
       map: loader.load('./car' + i +'.jpg', function(texture) {
           renderer.render(scene, camera)
           return texture
@@ -47,7 +47,7 @@
   // 车轮
   function creatTorus () {
     return new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.06, 24, 100),
-      new THREE.MeshStandardMaterial({
+      new THREE.MeshLambertMaterial({
         color: 0xffffff
       })
     )
