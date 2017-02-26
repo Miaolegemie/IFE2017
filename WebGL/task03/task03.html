@@ -38,13 +38,17 @@
   cube.castShadow = true
   scene.add(cube)
   // 车轮
-  function creatTorus () {
-    return new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.06, 24, 100),
-      new THREE.MeshPhongMaterial({
-        color: 0xffffff
-      })
-    )
-  }
+  loader.load('./torus.jpg', function (texture) {
+    function creatTorus () {
+      return new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.06, 24, 100),
+        new THREE.MeshPhongMaterial({
+          color: 0xffffff,
+          map: texture
+        })
+      )
+    }
+  })
+
   const torusLeft = creatTorus()
   torusLeft.position.set(-0.7, -0.45, 0.5)
   torusLeft.receiveShadow = true
@@ -56,19 +60,21 @@
   torusRight.castShadow = true
   scene.add(torusRight)
   // 平面
-  loader.load('./plane.jpg', function (texture) {
-    const plane = new THREE.Mesh(new THREE.PlaneGeometry(4, 6, 80, 120),
-      new THREE.MeshPhongMaterial({
-        color: 0x97ff72,
-        side: THREE.BackSide,
-        map: texture
-      })
-    )
-    plane.position.set(0, -0.675, 1)
-    plane.rotateX(Math.PI/2)
-    plane.receiveShadow = true
-    scene.add(plane)
-    renderer.render(scene, camera)
+  const planePromise = new Promise(function(resolve, reject) {
+    loader.load('./plane.jpg', function (texture) {
+      const plane = new THREE.Mesh(new THREE.PlaneGeometry(4, 6, 80, 120),
+        new THREE.MeshPhongMaterial({
+          color: 0x97ff72,
+          side: THREE.BackSide,
+          map: texture
+        })
+      )
+      plane.position.set(0, -0.675, 1)
+      plane.rotateX(Math.PI/2)
+      plane.receiveShadow = true
+      scene.add(plane)
+      resolve()
+    })
   })
   // 光源
   const light = new THREE.SpotLight(0xffffff, 1, 100, Math.PI / 6, 25)
