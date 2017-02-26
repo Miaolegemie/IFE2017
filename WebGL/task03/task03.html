@@ -30,6 +30,16 @@
   camera.lookAt(new THREE.Vector3(0, 0, 0))
   scene.add(camera)
   // 车体 -- 长方体
+  const materials = []
+  for (let i = 0; i < 6; ++i) {
+    materials.push(new THREE.MeshBasicMaterial({
+      map: THREE.ImageUtils.loadTexture(`./car${i}.jpg`,
+        {}, function() {
+            renderer.render(scene, camera)
+        }),
+    }))
+  }
+
   const cube = new THREE.Mesh(new THREE.BoxGeometry(2, 1, 1, 200, 100, 100),
     new THREE.MeshLambertMaterial({
       color: 0xffffff
@@ -38,33 +48,34 @@
   cube.castShadow = true
   scene.add(cube)
   // 车轮
-  loader.load('./torus.jpg', function (texture) {
-    function creatTorus () {
-      return new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.06, 24, 100),
-        new THREE.MeshPhongMaterial({
-          color: 0xffffff,
-          map: texture
-        })
-      )
-    }
+  const torusPromise = new Promise(function(resolve, reject) {
+    loader.load('./torus.jpg', function (texture) {
+      function creatTorus () {
+        return new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.06, 24, 100),
+          new THREE.MeshPhongMaterial({
+            map: texture
+          })
+        )
+      }
+      const torusLeft = creatTorus()
+      torusLeft.position.set(-0.7, -0.45, 0.5)
+      torusLeft.receiveShadow = true
+      torusLeft.castShadow = true
+      scene.add(torusLeft)
+      const torusRight = creatTorus()
+      torusRight.position.set(0.7, -0.45, 0.5)
+      torusRight.receiveShadow = true
+      torusRight.castShadow = true
+      scene.add(torusRight)
+    })
+    resolve()
   })
 
-  const torusLeft = creatTorus()
-  torusLeft.position.set(-0.7, -0.45, 0.5)
-  torusLeft.receiveShadow = true
-  torusLeft.castShadow = true
-  scene.add(torusLeft)
-  const torusRight = creatTorus()
-  torusRight.position.set(0.7, -0.45, 0.5)
-  torusRight.receiveShadow = true
-  torusRight.castShadow = true
-  scene.add(torusRight)
   // 平面
   const planePromise = new Promise(function(resolve, reject) {
     loader.load('./plane.jpg', function (texture) {
       const plane = new THREE.Mesh(new THREE.PlaneGeometry(4, 6, 80, 120),
         new THREE.MeshPhongMaterial({
-          color: 0x97ff72,
           side: THREE.BackSide,
           map: texture
         })
@@ -92,5 +103,9 @@
 
   // 渲染
   renderer.render(scene, camera)
+  Promise.all([planePromise, torusPromise])
+    .then(value => {
+      renderer.render(scene, camera)
+    })
 </script>
 </html>
