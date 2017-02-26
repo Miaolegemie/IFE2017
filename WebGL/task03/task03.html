@@ -40,7 +40,7 @@
   // })
   for (let i = 1; i <= 6; i++) {
     materials.push(new THREE.MeshBasicMaterial({
-      map: loader.load(`./car${i}.jpg`,{}, function() {
+      map: loader.load(`./car${i}.jpg`, function() {
           renderer.render(scene, camera)
         })
     }))
