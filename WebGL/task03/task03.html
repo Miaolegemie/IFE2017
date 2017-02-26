@@ -42,6 +42,7 @@
     materials.push(new THREE.MeshBasicMaterial({
       map: loader.load(`./car${i}.jpg`, function(texture) {
           renderer.render(scene, camera)
+          return texture
         })
     }))
   }
