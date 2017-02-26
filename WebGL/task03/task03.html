@@ -72,6 +72,7 @@
   plane.position.set(0, -0.675, 1)
   plane.rotateX(Math.PI/2)
   plane.receiveShadow = true
+  torusRight.castShadow = true
   scene.add(plane)
   // 光源
   const light = new THREE.SpotLight(0xffffff, 1, 100, Math.PI / 6, 25)
