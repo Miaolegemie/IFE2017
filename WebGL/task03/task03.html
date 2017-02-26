@@ -89,9 +89,5 @@
 
   // 渲染
   renderer.render(scene, camera)
-  Promise.all([planePromise, torusPromise])
-    .then(value => {
-      renderer.render(scene, camera)
-    })
 </script>
 </html>
