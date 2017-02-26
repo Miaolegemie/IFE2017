@@ -31,9 +31,9 @@
   scene.add(camera)
   // 车体 -- 长方体
   const materials = []
-  for (let i = 0; i < 6; ++i) {
+  for (let i = 1; i <= 6; i++) {
     materials.push(new THREE.MeshBasicMaterial({
-      map: THREE.ImageUtils.loadTexture(`./car${i}.jpg`,
+      map: loader.load(`./car${i}.jpg`,
         {}, function() {
             renderer.render(scene, camera)
         }),
@@ -41,9 +41,7 @@
   }
 
   const cube = new THREE.Mesh(new THREE.BoxGeometry(2, 1, 1, 200, 100, 100),
-    new THREE.MeshLambertMaterial({
-      color: 0xffffff
-    })
+    new THREE.MeshLambertMaterial(materials)
   )
   cube.castShadow = true
   scene.add(cube)
