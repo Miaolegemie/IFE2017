@@ -8,30 +8,28 @@
 </head>
 <style>
   * {
-    margin: 0;
-    overflow: hidden;
+    margin: 0
+    overflow: hidden
   }
   #three {
-    width: 400px;
-    height: 300px;
+    width: 100%
+    height: 100%
   }
 </style>
 <body>
-  <canvas id="three" width="800" height="600" style="width: 400px; height: 300px;"></canvas>
+  <canvas id="three"></canvas>
 </body>
 <script src="https://cdn.bootcss.com/three.js/r83/three.js"></script>
+<script src="./TrackballControls.js"></script>
 <script>
   const canvas = document.querySelector('#three')
-  // canvas.width = 1920
-  // canvas.height = 1080
   const renderer = new THREE.WebGLRenderer({
     canvas: document.getElementById('three'),
     antialias: true,
     precision: 'highp'
   })
   renderer.setClearColor(0x666666)
-  console.log(renderer.getSize())
-  // renderer.setSize(window.innerWidth, window.innerHeight)
+  renderer.setSize(window.innerWidth, window.innerHeight)
   // 阴影
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
@@ -96,7 +94,41 @@
 
   scene.add(light)
 
+  // 控制器
+  const controls = new THREE.TrackballControls( camera )
+
+  controls.rotateSpeed = 1.0
+	controls.zoomSpeed = 1.2
+	controls.panSpeed = 0.8
+	controls.noZoom = false
+	controls.noPan = false
+	controls.staticMoving = true
+	controls.dynamicDampingFactor = 0.3
+  controls.keys = [ 65, 83, 68 ]
+
+	controls.addEventListener( 'change', render )
+
   // 渲染
-  renderer.render(scene, camera)
+  window.addEventListener( 'resize', onWindowResize, false )
+  render()
+  animate()
+
+  function render() {
+		renderer.render( scene, camera )
+	}
+
+  function onWindowResize() {
+		camera.aspect = window.innerWidth / window.innerHeight
+		camera.updateProjectionMatrix()
+		renderer.setSize( window.innerWidth, window.innerHeight )
+		controls.handleResize()
+		render()
+	}
+
+
+	function animate() {
+		requestAnimationFrame( animate )
+		controls.update()
+	}
 </script>
 </html>
