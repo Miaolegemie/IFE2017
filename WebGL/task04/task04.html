@@ -22,35 +22,87 @@
 <script src="https://cdn.bootcss.com/three.js/r83/three.js"></script>
 <script src="./TrackballControls.js"></script>
 <script>
-  const canvas = document.querySelector('#three')
-  const renderer = new THREE.WebGLRenderer({
-    canvas: document.getElementById('three'),
-    antialias: true,
-    precision: 'highp'
-  })
-  renderer.setClearColor(0x666666)
-  renderer.setSize(window.innerWidth, window.innerHeight)
-  // 阴影
-  renderer.shadowMap.enabled = true
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap
-  const scene = new THREE.Scene()
+  let renderer,scene,camera,controls
 
-  // 照相机
-  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000)
-  camera.position.set(25, 10, 20)
-  camera.lookAt(new THREE.Vector3(0, 0, 0))
-  scene.add(camera)
-  // 创建一个调试用途的坐标轴，X轴红色、Y轴绿色、Z轴蓝色。100表示轴线长度
-  const axes = new THREE.AxisHelper(500)
-  scene.add( axes )
-  // 车体 -- 长方体
-  const cube = new THREE.Mesh(new THREE.BoxGeometry(20, 10, 10),
-    new THREE.MeshLambertMaterial({
-      color: 0xffffff
+  function init() {
+    const canvas = document.querySelector('#three')
+    renderer = new THREE.WebGLRenderer({
+      canvas: document.getElementById('three'),
+      antialias: true,
+      precision: 'highp'
     })
-  )
-  cube.castShadow = true
-  scene.add(cube)
+    renderer.setClearColor(0x666666)
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    // 阴影
+    renderer.shadowMap.enabled = true
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap
+    scene = new THREE.Scene()
+    // 照相机
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000)
+    camera.position.set(25, 10, 20)
+    camera.lookAt(new THREE.Vector3(0, 0, 0))
+    scene.add(camera)
+    // 控制器
+    controls = new THREE.TrackballControls( camera )
+
+    controls.rotateSpeed = 1.0
+  	controls.zoomSpeed = 1.2
+  	controls.panSpeed = 0.8
+  	controls.noZoom = false
+  	controls.noPan = false
+  	controls.staticMoving = true
+  	controls.dynamicDampingFactor = 0.3
+    controls.keys = [ 65, 83, 68 ]
+
+  	controls.addEventListener( 'change', render )
+    // 创建一个调试用途的坐标轴，X轴红色、Y轴绿色、Z轴蓝色。100表示轴线长度
+    const axes = new THREE.AxisHelper(500)
+    scene.add( axes )
+    // 车体 -- 长方体
+    const cube = new THREE.Mesh(new THREE.BoxGeometry(20, 10, 10),
+      new THREE.MeshLambertMaterial({
+        color: 0xffffff
+      })
+    )
+    cube.castShadow = true
+    scene.add(cube)
+    // 车轮
+    const torusLeft = creatTorus()
+    torusLeft.position.set(-7, -4.5, 5)
+    torusLeft.receiveShadow = true
+    torusLeft.castShadow = true
+    scene.add(torusLeft)
+    const torusRight = creatTorus()
+    torusRight.position.set(7, -4.5, 5)
+    torusRight.receiveShadow = true
+    torusRight.castShadow = true
+    scene.add(torusRight)
+    // 平面
+    const plane = new THREE.Mesh(new THREE.PlaneGeometry(40, 60),
+      new THREE.MeshPhongMaterial({
+        color: 0x97ff72,
+        side: THREE.BackSide
+      })
+    )
+    plane.position.set(0, -6.75, 10)
+    plane.rotateX(Math.PI/2)
+    plane.receiveShadow = true
+    scene.add(plane)
+    // 光源
+    const light = new THREE.SpotLight(0xffffff, 1, 1000, Math.PI / 3, 2)
+    light.position.set(-15, 30, 40)
+      // 光源阴影
+    light.castShadow = true
+    light.shadow.camera.near = 1
+    light.shadow.camera.far = 1000
+    light.shadow.camera.visible = true
+    light.shadow.camera.fov = 30
+    light.shadow.mapSize.Width = 1024
+    light.shadow.mapSize.Height = 1024
+
+    scene.add(light)
+  }
+
   // 车轮
   function creatTorus () {
     return new THREE.Mesh(new THREE.TorusGeometry(1.8, 0.6, 24, 100),
@@ -59,76 +111,31 @@
       })
     )
   }
-  const torusLeft = creatTorus()
-  torusLeft.position.set(-7, -4.5, 5)
-  torusLeft.receiveShadow = true
-  torusLeft.castShadow = true
-  scene.add(torusLeft)
-  const torusRight = creatTorus()
-  torusRight.position.set(7, -4.5, 5)
-  torusRight.receiveShadow = true
-  torusRight.castShadow = true
-  scene.add(torusRight)
-  // 平面
-  const plane = new THREE.Mesh(new THREE.PlaneGeometry(40, 60),
-    new THREE.MeshPhongMaterial({
-      color: 0x97ff72,
-      side: THREE.BackSide
-    })
-  )
-  plane.position.set(0, -6.75, 10)
-  plane.rotateX(Math.PI/2)
-  plane.receiveShadow = true
-  scene.add(plane)
-  // 光源
-  const light = new THREE.SpotLight(0xffffff, 1, 1000, Math.PI / 3, 2)
-  light.position.set(-15, 30, 40)
-    // 光源阴影
-  light.castShadow = true
-  light.shadow.camera.near = 1
-  light.shadow.camera.far = 1000
-  light.shadow.camera.visible = true
-  light.shadow.camera.fov = 30
-  light.shadow.mapSize.Width = 1024
-  light.shadow.mapSize.Height = 1024
 
-  scene.add(light)
+  function render() {
+    renderer.render( scene, camera )
+  }
 
-  // 控制器
-  const controls = new THREE.TrackballControls( camera )
+  // 监听缩放
+  window.addEventListener( 'resize', onWindowResize, false )
+  function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight
+    camera.updateProjectionMatrix()
+    renderer.setSize( window.innerWidth, window.innerHeight )
+    controls.handleResize()
+    render()
+  }
 
-  controls.rotateSpeed = 1.0
-	controls.zoomSpeed = 1.2
-	controls.panSpeed = 0.8
-	controls.noZoom = false
-	controls.noPan = false
-	controls.staticMoving = true
-	controls.dynamicDampingFactor = 0.3
-  controls.keys = [ 65, 83, 68 ]
-
-	controls.addEventListener( 'change', render )
+  // 动画
+  function animate() {
+    requestAnimationFrame( animate )
+    controls.update()
+  }
 
   // 渲染
-  window.addEventListener( 'resize', onWindowResize, false )
+  init()
   render()
   animate()
 
-  function render() {
-		renderer.render( scene, camera )
-	}
-
-  function onWindowResize() {
-		camera.aspect = window.innerWidth / window.innerHeight
-		camera.updateProjectionMatrix()
-		renderer.setSize( window.innerWidth, window.innerHeight )
-		controls.handleResize()
-		render()
-	}
-
-
-	function animate() {
-		requestAnimationFrame( animate )
-		controls.update()
-	}
 </script>
 </html>
