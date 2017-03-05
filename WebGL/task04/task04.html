@@ -62,16 +62,14 @@
     cube.castShadow = true
     scene.add(cube)
     // 车轮
-    const torusLeft = creatTorus()
-    torusLeft.position.set(-7, -4.5, 5)
-    torusLeft.receiveShadow = true
-    torusLeft.castShadow = true
-    scene.add(torusLeft)
-    const torusRight = creatTorus()
-    torusRight.position.set(7, -4.5, 5)
-    torusRight.receiveShadow = true
-    torusRight.castShadow = true
-    scene.add(torusRight)
+    const wheelsPosition = [[-7, -4.5, 5], [7, -4.5, 5], [-7, -4.5, -5], [7, -4.5, -5]]
+    wheelsPosition.forEach(position => {
+      let wheel = creatTorus()
+      wheel.position.set(...position)
+      wheel.receiveShadow = true
+      wheel.castShadow = true
+      scene.add(wheel)
+    })
     // 平面
     const plane = new THREE.Mesh(new THREE.PlaneGeometry(40, 60),
       new THREE.MeshPhongMaterial({
