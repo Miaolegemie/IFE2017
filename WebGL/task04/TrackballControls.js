@@ -6,6 +6,7 @@
  */
 
 THREE.TrackballControls = function ( object, domElement ) {
+  // _this.object 为一个 camera 对象
 
 	var _this = this;
 	var STATE = { NONE: - 1, ROTATE: 0, ZOOM: 1, PAN: 2, TOUCH_ROTATE: 3, TOUCH_ZOOM_PAN: 4 };
@@ -15,25 +16,25 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	// API
 
-	this.enabled = true;
+	this.enabled = true; // 是否启用
 
 	this.screen = { left: 0, top: 0, width: 0, height: 0 };
 
-	this.rotateSpeed = 1.0;
-	this.zoomSpeed = 1.2;
-	this.panSpeed = 0.3;
+	this.rotateSpeed = 1.0; // 旋转速度
+	this.zoomSpeed = 1.2; // 缩放
+	this.panSpeed = 0.3; // 平移速度
 
 	this.noRotate = false;
 	this.noZoom = false;
 	this.noPan = false;
 
-	this.staticMoving = false;
-	this.dynamicDampingFactor = 0.2;
+	this.staticMoving = false; // 开启后当停止操作后会有一个逐渐衰减过程
+	this.dynamicDampingFactor = 0.2; // 阻力
 
-	this.minDistance = 0;
-	this.maxDistance = Infinity;
+	this.minDistance = 0; // 小于此距离不再生效
+	this.maxDistance = Infinity; // 大于此距离不再生效
 
-	this.keys = [ 65 /*A*/, 83 /*S*/, 68 /*D*/ ];
+	this.keys = [ 65 /*A*/, 83 /*S*/, 68 /*D*/ ]; // 默认按键
 
 	// internals
 
@@ -78,8 +79,9 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	// methods
 
+  // 重置
 	this.handleResize = function () {
-
+    // 如果挂在载 document 上，则设置场景为全屏
 		if ( this.domElement === document ) {
 
 			this.screen.left = 0;
@@ -89,11 +91,12 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 		} else {
 
+      // 否则算出需要的数据 left, top, width, height
 			var box = this.domElement.getBoundingClientRect();
 			// adjustments come from similar code in the jquery offset() function
 			var d = this.domElement.ownerDocument.documentElement;
-			this.screen.left = box.left + window.pageXOffset - d.clientLeft;
-			this.screen.top = box.top + window.pageYOffset - d.clientTop;
+			this.screen.left = box.left + window.pageXOffset - d.clientLeft; // pageXOffset 属性是 scrollX 属性的别名，但前者有更好的兼容性
+			this.screen.top = box.top + window.pageYOffset - d.clientTop; // 同上
 			this.screen.width = box.width;
 			this.screen.height = box.height;
 
@@ -101,16 +104,17 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	};
 
+  // TODO: 迷茫
 	this.handleEvent = function ( event ) {
 
 		if ( typeof this[ event.type ] == 'function' ) {
-
 			this[ event.type ]( event );
 
 		}
 
 	};
 
+  // 获取鼠标相对于 场景 的向量，恒为正
 	var getMouseOnScreen = ( function () {
 
 		var vector = new THREE.Vector2();
@@ -128,12 +132,13 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	}() );
 
+  // 第一个是 X 轴相对于 场景中点 的偏移量。
+  // TODO: 第二个不知道
 	var getMouseOnCircle = ( function () {
 
 		var vector = new THREE.Vector2();
 
 		return function getMouseOnCircle( pageX, pageY ) {
-
 			vector.set(
 				( ( pageX - _this.screen.width * 0.5 - _this.screen.left ) / ( _this.screen.width * 0.5 ) ),
 				( ( _this.screen.height + 2 * ( _this.screen.top - pageY ) ) / _this.screen.width ) // screen.width intentional
@@ -145,44 +150,50 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	}() );
 
+  // 旋转摄像机
 	this.rotateCamera = ( function() {
 
-		var axis = new THREE.Vector3(),
-			quaternion = new THREE.Quaternion(),
-			eyeDirection = new THREE.Vector3(),
+		var axis = new THREE.Vector3(), // 轴
+			quaternion = new THREE.Quaternion(), // 四元数
+			eyeDirection = new THREE.Vector3(), // 视角方向
 			objectUpDirection = new THREE.Vector3(),
 			objectSidewaysDirection = new THREE.Vector3(),
 			moveDirection = new THREE.Vector3(),
 			angle;
 
 		return function rotateCamera() {
-
+      // x,y变化的向量
 			moveDirection.set( _moveCurr.x - _movePrev.x, _moveCurr.y - _movePrev.y, 0 );
+      // 拿到向量长度，作为旋转角度
 			angle = moveDirection.length();
 
 			if ( angle ) {
-
+        // 视角变为当前物体向量减去当前目标向量
 				_eye.copy( _this.object.position ).sub( _this.target );
 
-				eyeDirection.copy( _eye ).normalize();
-				objectUpDirection.copy( _this.object.up ).normalize();
-				objectSidewaysDirection.crossVectors( objectUpDirection, eyeDirection ).normalize();
+        // 下面这三个向量是 垂直平面的向量（视线方向）（Z轴），空间中向上的向量（Y轴），垂直于前两者的 向“右”的向量（X轴）
+        // 似乎是用于重新确定坐标轴用，
+        // 可以打印出来看一看，这样比较清晰
+				eyeDirection.copy( _eye ).normalize(); // eyeDirection 为 _eye 的单位向量，即垂直平面向里的向量
+				objectUpDirection.copy( _this.object.up ).normalize(); // objectUpDirection 为 当前摄像机 空间的向上方向 的单位向量
+				objectSidewaysDirection.crossVectors( objectUpDirection, eyeDirection ).normalize(); // objectSidewaysDirection 为向量的外积的单位向量，即水平方向
 
-				objectUpDirection.setLength( _moveCurr.y - _movePrev.y );
-				objectSidewaysDirection.setLength( _moveCurr.x - _movePrev.x );
+				objectUpDirection.setLength( _moveCurr.y - _movePrev.y ); // 归一化后乘以移动的距离
+				objectSidewaysDirection.setLength( _moveCurr.x - _movePrev.x ); // 归一化后乘以移动的距离
 
-				moveDirection.copy( objectUpDirection.add( objectSidewaysDirection ) );
+				moveDirection.copy( objectUpDirection.add( objectSidewaysDirection ) ); // 在x, y轴移动的向量和
 
-				axis.crossVectors( moveDirection, _eye ).normalize();
+				axis.crossVectors( moveDirection, _eye ).normalize(); // 外积，拿到新的坐标轴变换向量
 
-				angle *= _this.rotateSpeed;
-				quaternion.setFromAxisAngle( axis, angle );
+				angle *= _this.rotateSpeed; // 拿到旋转角度
+				quaternion.setFromAxisAngle( axis, angle ); // 设置四元数
 
+        // 进行四元数变换，得到旋转后新的向量
 				_eye.applyQuaternion( quaternion );
 				_this.object.up.applyQuaternion( quaternion );
 
-				_lastAxis.copy( axis );
-				_lastAngle = angle;
+				_lastAxis.copy( axis ); // 更新上一次的坐标轴
+				_lastAngle = angle; // 更新上一次的角度
 
 			} else if ( ! _this.staticMoving && _lastAngle ) {
 

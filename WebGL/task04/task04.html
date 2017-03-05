@@ -45,14 +45,9 @@
     // 控制器
     controls = new THREE.TrackballControls( camera )
 
-    controls.rotateSpeed = 1.0
-  	controls.zoomSpeed = 1.2
-  	controls.panSpeed = 0.8
-  	controls.noZoom = false
-  	controls.noPan = false
-  	controls.staticMoving = true
-  	controls.dynamicDampingFactor = 0.3
-    controls.keys = [ 65, 83, 68 ]
+    controls.rotateSpeed = 2
+  	controls.panSpeed = 0.1
+  	controls.dynamicDampingFactor = 0.1
 
   	controls.addEventListener( 'change', render )
     // 创建一个调试用途的坐标轴，X轴红色、Y轴绿色、Z轴蓝色。100表示轴线长度
