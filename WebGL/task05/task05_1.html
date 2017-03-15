@@ -27,6 +27,16 @@
   let stats // 性能监测插件
   let car = new THREE.Group()// 车车
   let wheels = [] // 车轮
+  let keydown = {
+    'w': false,
+    'a': false,
+    's': false,
+    'd': false,
+  }
+  let changeInfo ={
+    'changeX': 1,
+    'changeZ': 0
+  }
 
   function init() {
     // stats.js
@@ -101,8 +111,8 @@
     light.shadow.camera.far = 1000
     light.shadow.camera.visible = true
     light.shadow.camera.fov = 30
-    light.shadow.mapSize.Width = 1024
-    light.shadow.mapSize.Height = 1024
+    light.shadow.mapSize.Width = 2048
+    light.shadow.mapSize.Height = 2048
     scene.add(light)
     // 环境光
     const ambientLight = new THREE.AmbientLight( 0x404040 )
@@ -131,14 +141,44 @@
     controls.handleResize()
     render()
   }
-
+  // 监听按键
+  document.addEventListener('keydown', function (e) {
+    keydown[e.key] = true
+  })
+  document.addEventListener('keyup', function (e) {
+    keydown[e.key] = false
+  })
   // 动画
   function animate() {
     stats.begin()
-
+    move ()
     stats.end()
     requestAnimationFrame( animate )
     controls.update()
+  }
+  function move () {
+    // 前进
+    if (keydown.w) {
+      let ratationY = car.rotation.y % (2 * Math.PI)
+      let nowPositionX = car.position.x + Math.cos(ratationY)
+      let nowPositionZ = car.position.z - Math.sin(ratationY)
+      car.position.set(nowPositionX, 0, nowPositionZ)
+    }
+    // 后退
+    if (keydown.s) {
+      let ratationY = car.rotation.y % (2 * Math.PI)
+      let nowPositionX = car.position.x - Math.cos(ratationY)
+      let nowPositionZ = car.position.z + Math.sin(ratationY)
+      car.position.set(nowPositionX, 0, nowPositionZ)
+    }
+    // 左转
+    if (keydown.a) {
+      car.rotation.set(0, car.rotation.y + 0.03, 0)
+    }
+    // 右转
+    if (keydown.d) {
+      car.rotation.set(0, car.rotation.y - 0.03, 0)
+    }
   }
   // 渲染
   init()
