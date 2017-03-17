@@ -160,12 +160,8 @@
       // let nowPositionZ = car.position.z + changeInfo.changeZ
       // console.log(nowPositionX, nowPositionZ);
       let ratationY = car.rotation.y % (2 * Math.PI)
-      console.log(ratationY, ratationY * 180, 'ratationY');
-      // console.log(Math.cos(90*Math.PI/180));
-      console.log(90*Math.PI/180);
       let nowPositionX = car.position.x + Math.cos(ratationY)
       let nowPositionZ = car.position.z - Math.sin(ratationY)
-      console.log(Math.cos(ratationY), 'x位移', Math.sin(ratationY), 'y位移');
       car.position.set(nowPositionX, 0, nowPositionZ)
     }
     // 后退
@@ -175,7 +171,9 @@
       // let nowPositionZ = car.position.z - changeInfo.changeZ
       // car.position.set(nowPositionX, 0, nowPositionZ)
       let ratationY = car.rotation.y % (2 * Math.PI)
-      car.position.set(car.position.x + Math.cos(ratationY), 0, car.position.z + Math.sin(ratationY))
+      let nowPositionX = car.position.x - Math.cos(ratationY)
+      let nowPositionZ = car.position.z + Math.sin(ratationY)
+      car.position.set(nowPositionX, 0, nowPositionZ)
     }
     // 左转
     if (keydown.a) {
