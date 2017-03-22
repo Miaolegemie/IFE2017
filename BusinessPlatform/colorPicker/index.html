@@ -16,6 +16,7 @@
       width: 350px;
       height: 100%;
       position: relative;
+      overflow: hidden;
       box-sizing: border-box;
       border: 3px solid #eeeeee;
     }
@@ -23,21 +24,45 @@
       width: 100%;
       height: 100%;
       position: absolute;
-      background-color: rgb(0, 255,243);
+      left: 0;
+      top: 0;
     }
     .color-picker-alpha {
       width: 100%;
       height: 100%;
       position: absolute;
-      background: linear-gradient(to bottom right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.8));
+      left: 0;
+      top: 0;
+      background: linear-gradient(to bottom right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0), rgba(0, 0, 0, 1));
+      /*background: radial-gradient(at 0px 0px, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0) 60%, rgba(0, 0, 0, 0.8));*/
+    }
+    .color-picker-body-select {
+      width: 10px;
+      height: 10px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: inherit;
+      border-radius: 50%;
+      border: 1px solid red;
     }
     .color-picker-bar {
       width: 30px;
       height: 100%;
       margin: 0 10px;
+      position: relative;
+      overflow: hidden;
       box-sizing: border-box;
       border: 3px solid #eeeeee;
-      background: linear-gradient(to bottom, red, orange, yellow, green, blue, indigo, violet);
+    }
+    .color-picker-bar-select {
+      width: 10px;
+      height: 10px;
+      position: absolute;
+      left: calc(50% - 7.4px);
+      top: 100px;
+      border-radius: 50%;
+      border: 3px solid red;
     }
     .color-picker-setting{
       width: 100px;
@@ -70,6 +95,7 @@
       font-size: 18px;
     }
     .color-picker-group input {
+      width: 80px;
       height: 30px;
       padding: 5px;
       box-sizing: border-box;
@@ -81,8 +107,11 @@
     <div class="color-picker-body">
       <div class="color-picker-color"></div>
       <div class="color-picker-alpha"></div>
+      <div class="color-picker-body-select"></div>
     </div>
-    <div class="color-picker-bar"></div>
+    <div class="color-picker-bar">
+      <div class="color-picker-bar-select"></div>
+    </div>
     <div class="color-picker-setting">
       <div class="color-picker-rgb">
         <div class="color-picker-group">
@@ -97,16 +126,28 @@
       </div>
       <div class="color-picker-hsl">
         <div class="color-picker-group">
-          <label for="hsl-h">H</label><input id="hsl-h" type="number" min="0" max="255">
+          <label for="hsl-h">H</label><input id="hsl-h" type="number" min="0" max="360">
         </div>
         <div class="color-picker-group">
-          <label for="hsl-s">S</label><input id="hsl-s" type="number" min="0" max="255">
+          <label for="hsl-s">S</label><input id="hsl-s" type="number" min="0" max="1" step="0.01">
         </div>
         <div class="color-picker-group">
-          <label for="hsl-l">L</label><input id="hsl-l" type="number" min="0" max="255">
+          <label for="hsl-l">L</label><input id="hsl-l" type="number" min="0" max="1" step="0.01">
         </div>
       </div>
     </div>
   </div>
+
+  <script src="./index.js"></script>
+  <script>
+    const dom = document.querySelector('.color-picker')
+    const color = new colorPicker({
+      'dom': dom,
+      // 'color': 'red'
+    })
+    const test = document.querySelector('.color-picker-bar-select')
+    // console.log(window.getComputedStyle(test, null));
+    // console.log(test.style);
+  </script>
 </body>
 </html>
