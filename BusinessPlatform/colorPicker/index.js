@@ -14,21 +14,12 @@ class colorPicker {
   init (color) {
     if (this.type === 'hsl') {
       const hsl = color.slice(4, -1).split(',').map(ele => {
-        return ele.trim()
+        return Number(ele.trim())
       })
       this.hsl = hsl
+      this.hslToRgb(...this.hsl)
       this.changeHSL()
-
-      // this.hsl = color
-      // const hsl = this.color.slice(4, -1).split(',');
-      // [this.h, this.s ,this.l] = hsl.map(ele => {
-      //   return Number(ele)
-      // })
-      // let hslDoms = Array.from(this.dom.querySelectorAll('.color-picker-hsl .color-picker-group input'))
-      // hslDoms.forEach(dom => {
-      //   let id = dom.id.slice(-1)
-      //   dom.value = this[id]
-      // })
+      this.changeRGB()
     } else {
 
     }
@@ -41,8 +32,7 @@ class colorPicker {
   修改 调色盘
   */
   changeBodyColor () {
-    this.dom.querySelector('.color-picker-color').style.background = `hsl(${this.hsl[0]},100%,50%)`
-    console.log(1);
+    this.dom.querySelector('.color-picker-color').style.background = `hsl(${this.hsl[0] * 360},100%,50%)`
   }
   /*
   修改颜色
@@ -58,8 +48,11 @@ class colorPicker {
   修改颜色
   接受 rgb 参数颜色
   */
-  changeRGB (rgb) {
-
+  changeRGB () {
+    let rgbDoms = Array.from(this.dom.querySelectorAll('.color-picker-rgb .color-picker-group input'))
+    rgbDoms.forEach((dom, index) => {
+      dom.value = Number(this.rgb[index])
+    })
   }
 
   /**
@@ -75,6 +68,7 @@ class colorPicker {
    */
   hslToRgb (h, s, l) {
     var r, g, b;
+    console.log(h, s, l);
     if (s == 0) {
       r = g = b = l; // achromatic
     } else {
@@ -92,8 +86,10 @@ class colorPicker {
       g = hue2rgb(p, q, h);
       b = hue2rgb(p, q, h - 1/3);
     }
-    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
- }
+    console.log(r, g, b);
+    this.rgb =  [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+  }
+
   /**
   * RGB 颜色值转换为 HSL.
   * 转换公式参考自 http://en.wikipedia.org/wiki/HSL_color_space.
@@ -122,7 +118,7 @@ class colorPicker {
       }
       h /= 6;
     }
-    return [h, s, l];
+    this.hsl = [h, s, l];
   }
   /*
   初始化 bar (色环)
@@ -144,22 +140,20 @@ class colorPicker {
     let pickerBody = this.dom.querySelector('.color-picker-body')
     pickerBody.addEventListener('click', e => {
       const colorSelect = this.dom.querySelector('.color-picker-body-select')
-      console.log(e);
       const x = Math.abs(e.clientX - pickerBody.offsetLeft - pickerBody.clientLeft)
       const y = Math.abs(e.clientY - pickerBody.offsetTop - pickerBody.clientTop)
       colorSelect.style.left = `${x - (colorSelect.clientWidth / 2)}px`
       colorSelect.style.top = `${y - (colorSelect.clientHeight / 2)}px`
 
-      // 拿到百分比位置
+      // 更新亮度
       const standX = x / window.getComputedStyle(this.dom.querySelector('.color-picker-body')).width.slice(0, -2)
       const standY = 1 - (y / window.getComputedStyle(this.dom.querySelector('.color-picker-body')).height.slice(0, -2))
       const standDiagonal = Math.sqrt((Math.pow(standX, 2) + Math.pow(standY - 1, 2) - (Math.pow(standX + standY - 1, 2) / 2)) / 2)
-      if (standDiagonal > 0.5) {
+      this.hsl[2] = Number(standDiagonal.toFixed(2))
 
-      } else {
-
-      }
-
+      this.changeHSL()
+      this.hslToRgb(...this.hsl)
+      this.changeRGB()
     }, false)
   }
 
@@ -176,9 +170,11 @@ class colorPicker {
       colorSelect.style.top = `${y - (colorSelect.clientHeight / 2)}px`
 
       // 更改Hue
-      this.hsl[0] = Math.round((y / pickerBar.clientHeight) * 360)
-      this.changeHSL()
+      this.hsl[0] = (y / pickerBar.clientHeight).toFixed(2)
+      this.hslToRgb(...this.hsl)
       this.changeBodyColor()
+      this.changeHSL()
+      this.changeRGB()
     }, false)
   }
   /*
