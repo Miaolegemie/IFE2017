@@ -27,27 +27,43 @@ class colorPicker {
     this.initBar()
     this.addListenerBody()
     this.addListenerBar()
+    this.addListenerRgbChange()
+    this.addListenerHSLChange()
   }
-  /*
-  修改 调色盘
-  */
+
+  // 初始化 bar (色环)
+  initBar () {
+    let barStyle = `linear-gradient(to bottom`
+      for (let i = 0; i <= 360; i += 10) {
+        barStyle += `, hsl(${i}, 100%, 50%)`
+      }
+    barStyle += ')'
+    this.dom.querySelector('.color-picker-bar').style.background = barStyle
+
+    this.changeHSL()
+    this.changeRGB()
+    this.changeBodyColor()
+    this.changeLabelColor()
+    }
+
+  // 修改 调色盘 背景色
   changeBodyColor () {
-    this.dom.querySelector('.color-picker-color').style.background = `hsl(${this.hsl[0] * 360},100%,50%)`
+    this.dom.querySelector('.color-picker-color').style.background = `linear-gradient(to left, hsla(${this.hsl[0] * 360}, 100%, 50%, 1), hsla(${this.hsl[0] * 360}, 0%, 50%, 1))`
   }
-  /*
-  修改颜色
-  接受 hsl 参数颜色， 并修改其余表现
-  */
+  // 修改 label 背景色
+  changeLabelColor () {
+    Array.from(this.dom.querySelectorAll('label')).forEach(node => {
+      node.style.color = `hsla(${this.hsl[0] * 360}, ${this.hsl[1] * 100}%, ${this.hsl[2] * 100}%, 1)`
+    })
+  }
+  // 修改输入框 hsl 颜色
   changeHSL () {
     let hslDoms = Array.from(this.dom.querySelectorAll('.color-picker-hsl .color-picker-group input'))
     hslDoms.forEach((dom, index) => {
       dom.value = Number(this.hsl[index])
     })
   }
-  /*
-  修改颜色
-  接受 rgb 参数颜色
-  */
+  // 修改输入框 rgb 颜色
   changeRGB () {
     let rgbDoms = Array.from(this.dom.querySelectorAll('.color-picker-rgb .color-picker-group input'))
     rgbDoms.forEach((dom, index) => {
@@ -68,7 +84,6 @@ class colorPicker {
    */
   hslToRgb (h, s, l) {
     var r, g, b;
-    console.log(h, s, l);
     if (s == 0) {
       r = g = b = l; // achromatic
     } else {
@@ -86,7 +101,6 @@ class colorPicker {
       g = hue2rgb(p, q, h);
       b = hue2rgb(p, q, h - 1/3);
     }
-    console.log(r, g, b);
     this.rgb =  [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
   }
 
@@ -102,6 +116,7 @@ class colorPicker {
   * @return  Array           HSL各值数组
   */
   rgbToHsl(r, g, b){
+    console.log(r, g, b);
     r /= 255, g /= 255, b /= 255;
     var max = Math.max(r, g, b), min = Math.min(r, g, b);
     var h, s, l = (max + min) / 2;
@@ -118,23 +133,10 @@ class colorPicker {
       }
       h /= 6;
     }
-    this.hsl = [h, s, l];
+    this.hsl = [h.toFixed(2), s.toFixed(2), l.toFixed(2)];
   }
-  /*
-  初始化 bar (色环)
-  */
-  initBar () {
-    let barStyle = `linear-gradient(to bottom`
-    for (let i = 0; i <= 360; i += 10) {
-      barStyle += `, hsl(${i}, 100%, 50%)`
-    }
-    barStyle += ')'
-    this.dom.querySelector('.color-picker-bar').style.background = barStyle
-  }
-  /*
-  监听调色盘点击,并移动选色圆圈
-  返回点击的颜色 (string)
-  */
+
+  // 监听调色盘点击,并移动选色圆圈，修改两个输入框颜色
   addListenerBody () {
     // TODO: 不知道为什么点击圆圈的时候，e.offset 和 e.layer 等会突变
     let pickerBody = this.dom.querySelector('.color-picker-body')
@@ -145,22 +147,22 @@ class colorPicker {
       colorSelect.style.left = `${x - (colorSelect.clientWidth / 2)}px`
       colorSelect.style.top = `${y - (colorSelect.clientHeight / 2)}px`
 
-      // 更新亮度
+      // const standDiagonal = Math.sqrt((Math.pow(standX, 2) + Math.pow(standY - 1, 2) - (Math.pow(standX + standY - 1, 2) / 2)) / 2)
+      // 更新 亮度l
       const standX = x / window.getComputedStyle(this.dom.querySelector('.color-picker-body')).width.slice(0, -2)
+      this.hsl[1] = Number(standX.toFixed(2))
+      // 更新 饱和度s
       const standY = 1 - (y / window.getComputedStyle(this.dom.querySelector('.color-picker-body')).height.slice(0, -2))
-      const standDiagonal = Math.sqrt((Math.pow(standX, 2) + Math.pow(standY - 1, 2) - (Math.pow(standX + standY - 1, 2) / 2)) / 2)
-      this.hsl[2] = Number(standDiagonal.toFixed(2))
+      this.hsl[2] = Number(standY.toFixed(2))
 
-      this.changeHSL()
       this.hslToRgb(...this.hsl)
+      this.changeHSL()
       this.changeRGB()
+      this.changeLabelColor()
     }, false)
   }
 
-  /*
-  监听调色柱点击
-  更改 Hue
-  */
+  // 监听调色柱点击，并移动选色圆圈，修改输入框颜色
   addListenerBar () {
     let pickerBar = this.dom.querySelector('.color-picker-bar')
     pickerBar.addEventListener('click', e => {
@@ -170,18 +172,54 @@ class colorPicker {
       colorSelect.style.top = `${y - (colorSelect.clientHeight / 2)}px`
 
       // 更改Hue
-      this.hsl[0] = (y / pickerBar.clientHeight).toFixed(2)
+      this.hsl[0] = Number((y / pickerBar.clientHeight).toFixed(2))
+      // 修改信息
       this.hslToRgb(...this.hsl)
-      this.changeBodyColor()
       this.changeHSL()
       this.changeRGB()
+      this.changeBodyColor()
+      this.changeLabelColor()
     }, false)
   }
-  /*
-  监听 RGB 与 HSL 改变
-  */
-  addListenerChange () {
-
+  // 监听 RGB 改变
+  addListenerRgbChange () {
+    let rgbInputs = Array.from(this.dom.querySelectorAll('.color-picker-rgb .color-picker-group input'))
+    rgbInputs.forEach((node, index) => {
+      node.addEventListener('change', e => {
+        this.rgb[index] = Number(node.value)
+        this.rgbToHsl(...this.rgb)
+        this.changeHSL()
+        this.changeRGB()
+        this.changeBodyColor()
+        this.changeLabelColor()
+        this.changeSelectPos()
+      })
+    })
   }
+  // 监听 HSL 改变
+  addListenerHSLChange () {
+    let rgbInputs = Array.from(this.dom.querySelectorAll('.color-picker-hsl .color-picker-group input'))
+    rgbInputs.forEach((node, index) => {
+      node.addEventListener('change', e => {
+        this.hsl[index] = Number(node.value)
+        this.hslToRgb(...this.hsl)
+        this.changeHSL()
+        this.changeRGB()
+        this.changeBodyColor()
+        this.changeLabelColor()
+        this.changeSelectPos()
+      })
+    })
+  }
+  // 改变 选色圈位置
+  changeSelectPos () {
+    let bodySelect = this.dom.querySelector('.color-picker-body-select')
+    let barSelect = this.dom.querySelector('.color-picker-bar-select')
+    let body = this.dom.querySelector('.color-picker-body')
+    let bar = this.dom.querySelector('.color-picker-bar')
 
+    barSelect.style.top = `${(this.hsl[0] * bar.clientHeight) - (barSelect.clientHeight / 2)}px`
+    bodySelect.style.left = `${(this.hsl[1] * body.clientWidth) - (bodySelect.clientWidth / 2)}px`
+    bodySelect.style.top = `${(this.hsl[2] * body.clientHeight) - (bodySelect.clientHeight / 2)}px`
+  }
 }
