@@ -18,13 +18,19 @@ class colorPicker {
       })
       this.hsl = hsl
       this.hslToRgb(...this.hsl)
-      this.changeHSL()
-      this.changeRGB()
     } else {
-
+      const rgb = color.slice(4, -1).split(',').map(ele => {
+        return Number(ele.trim())
+      })
+      this.rgb = rgb
+      this.rgbToHsl(...this.rgb)
     }
+    this.changeHSL()
+    this.changeRGB()
+
     this.changeBodyColor()
     this.initBar()
+    this.changeSelectPos()
     this.addListenerBody()
     this.addListenerBar()
     this.addListenerRgbChange()
@@ -116,7 +122,6 @@ class colorPicker {
   * @return  Array           HSL各值数组
   */
   rgbToHsl(r, g, b){
-    console.log(r, g, b);
     r /= 255, g /= 255, b /= 255;
     var max = Math.max(r, g, b), min = Math.min(r, g, b);
     var h, s, l = (max + min) / 2;
@@ -133,7 +138,8 @@ class colorPicker {
       }
       h /= 6;
     }
-    this.hsl = [h.toFixed(2), s.toFixed(2), l.toFixed(2)];
+    console.log(h, s, l);
+    this.hsl = [Number(h.toFixed(2)), Number(s.toFixed(2)), Number(l.toFixed(2))];
   }
 
   // 监听调色盘点击,并移动选色圆圈，修改两个输入框颜色
@@ -188,6 +194,7 @@ class colorPicker {
       node.addEventListener('change', e => {
         this.rgb[index] = Number(node.value)
         this.rgbToHsl(...this.rgb)
+        console.log(this.rgb, this.hsl);
         this.changeHSL()
         this.changeRGB()
         this.changeBodyColor()
@@ -220,6 +227,6 @@ class colorPicker {
 
     barSelect.style.top = `${(this.hsl[0] * bar.clientHeight) - (barSelect.clientHeight / 2)}px`
     bodySelect.style.left = `${(this.hsl[1] * body.clientWidth) - (bodySelect.clientWidth / 2)}px`
-    bodySelect.style.top = `${(this.hsl[2] * body.clientHeight) - (bodySelect.clientHeight / 2)}px`
+    bodySelect.style.top = `${((1 - this.hsl[2]) * body.clientHeight) - (bodySelect.clientHeight / 2)}px`
   }
 }
