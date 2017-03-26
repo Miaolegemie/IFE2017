@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>tagCloud</title>
+  <style>
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    display: flex;
+  }
+  #tag-cloud {
+    width: 500px;
+    height: 500px;
+    margin: auto;
+    position: relative;
+  }
+  #tag-cloud .tag{
+    position: absolute;
+  }
+  </style>
+</head>
+<body>
+  <div id="tag-cloud">
+
+  </div>
+
+  <script src="./index.js"></script>
+  <script src="./mock-min.js"></script>
+  <script>
+    let data = Mock.mock({
+      'data|50': [{
+        'name': '@cword(2, 6)',
+        'data': '@integer(10, 100)'
+      }]
+    })
+    let cloud = new tagCloud({
+      dom: document.querySelector('#tag-cloud'),
+      tags: data.data,
+      baseSpeed: 1
+    })
+    console.log(cloud)
+  </script>
+</body>
+</html>
