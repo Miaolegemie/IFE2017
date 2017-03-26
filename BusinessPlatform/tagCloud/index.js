@@ -46,7 +46,7 @@ class tagCloud {
       tag.opacity = (tag.position[2] / RADIUS + 1) * 4 / 10 + 0.2 // 范围 0.2 - 1
       tag.zIndex = parseInt(scale * 100)
 
-      html += `<span class="tag" style="font-size: ${tag.fontSize}px;display: inline-block">${tag.name}</span>`
+      html += `<span class="tag" style="font-size: ${tag.fontSize}px;color: ${tag.color}">${tag.name}</span>`
     })
     this.dom.innerHTML = html
   }
@@ -76,7 +76,6 @@ class tagCloud {
     })
     this.dom.addEventListener('mouseleave',e => {
       this.rotate.needRotate = false
-      console.log(1);
     })
   }
 
@@ -87,11 +86,7 @@ class tagCloud {
       cos = Math.cos(this.rotate.speedX)
       sin = Math.sin(this.rotate.speedX)
     } else {
-      if (this.rotate.speedX >= 0){
-        this.rotate.speedX = this.rotate.speedX >= (0.0002  * this.options.baseSpeed) ? this.rotate.speedX - (0.0002  * this.options.baseSpeed) : 0
-      } else {
-        this.rotate.speedX = this.rotate.speedX <= (0.0002  * this.options.baseSpeed) ? this.rotate.speedX + (0.0002  * this.options.baseSpeed) : 0
-      }
+      this.rotate.speedX = this.rotate.speedX * 0.97
       cos = Math.cos(this.rotate.speedX)
       sin = Math.sin(this.rotate.speedX)
     }
@@ -109,16 +104,12 @@ class tagCloud {
     if (this.rotate.needRotate) {
       cos = Math.cos(this.rotate.speedY)
       sin = Math.sin(this.rotate.speedY)
+
     } else {
-      if (this.rotate.speedY >= 0){
-        this.rotate.speedY = this.rotate.speedY >= (0.0002  * this.options.baseSpeed) ? this.rotate.speedY - (0.0002  * this.options.baseSpeed) : 0
-      } else {
-        this.rotate.speedY = this.rotate.speedY <= (0.0002  * this.options.baseSpeed) ? this.rotate.speedY + (0.0002  * this.options.baseSpeed) : 0
-      }
+      this.rotate.speedY = this.rotate.speedY * 0.97
       cos = Math.cos(this.rotate.speedY)
       sin = Math.sin(this.rotate.speedY)
     }
-    // console.log(this.rotate.speedY);
     this.tags.forEach(tag => {
       let newX = tag.position[0] * cos - tag.position[2] * sin
       let newZ = tag.position[2] * cos + tag.position[0] * sin

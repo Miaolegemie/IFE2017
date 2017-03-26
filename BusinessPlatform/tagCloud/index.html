@@ -18,8 +18,9 @@
     margin: auto;
     position: relative;
   }
-  #tag-cloud .tag{
+  #tag-cloud .tag {
     position: absolute;
+    cursor: default;
   }
   </style>
 </head>
@@ -34,7 +35,8 @@
     let data = Mock.mock({
       'data|50': [{
         'name': '@cword(2, 6)',
-        'data': '@integer(10, 100)'
+        'data': '@integer(10, 100)',
+        'color': '@color()'
       }]
     })
     let cloud = new tagCloud({
