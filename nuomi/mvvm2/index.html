@@ -14,6 +14,9 @@
     name: 'liujianhuan',
     age: 25,
     company: 'Qihoo 360',
+    test: {
+      abb: 1
+    },
     address: 'Chaoyang, Beijing'
   })
 
@@ -25,7 +28,12 @@
     console.log(`我的年龄真的变了诶，竟然年轻了${oldVal - newVal}岁`)
   })
 
-  app.data.age = 20;
+  app.watch('abb', function(oldVal, newVal){
+    console.log(`abb`)
+  })
+
+  app.data.age = 20
+  app.data.test.abb = 111
   </script>
 </body>
 </html>
