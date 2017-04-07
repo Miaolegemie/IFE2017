@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>自定义checkbox， radio样式</title>
+</head>
+<style>
+input {
+  display: none;
+}
+label {
+  position: relative;
+}
+.radio-css::before {
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #eee;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+input[type=radio]:checked + .radio-css::before {
+  border: 2px solid red;
+}
+input[type=radio]:checked + .radio-css::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: red;
+  box-sizing: border-box;
+}
+.checkbox-css::before {
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #eee;
+  box-sizing: border-box;
+}
+input[type=checkbox]:checked + .checkbox-css::before {
+  border: 2px solid red;
+}
+input[type=checkbox]:checked + .checkbox-css::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 3px;
+  width: 10px;
+  height: 6px;
+  border-bottom: 3px solid red;
+  border-left: 3px solid red;
+  transform:rotate(-45deg);
+  box-sizing: border-box;
+}
+/*雪碧图*/
+.radio-sprit::before, .checkbox-sprit::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border:none;
+  display: inline-block;
+  background:url('./Sprite.png') no-repeat;
+}
+.radio-sprit::before {
+  background-position: -24px -10px;
+}
+input[type=radio]:checked + .radio-sprit::before {
+  background-position: -59px -10px;
+}
+.checkbox-sprit::before {
+  background-position:-25px -32px;
+}
+input[type=checkbox]:checked + .checkbox-sprit::before {
+  background-position: -60px -32px;
+}
+</style>
+<body>
+  <div>
+    <p>css实现</p>
+    <form action="">
+      <input id="radio1" type="radio" name="radio-sprit" value="">
+      <label class="radio-css" for="radio1">radio1</label>
+      <input id="radio2" type="radio" name="radio" value="">
+      <label class="radio-css" for="radio2">radio2</label>
+    </form>
+
+    <form action="">
+      <input id="checkbox1" type="checkbox" name="checkbox" value="">
+      <label class="checkbox-css" for="checkbox1">checkbox1</label>
+      <input id="checkbox2" type="checkbox" name="checkbox" value="">
+      <label class="checkbox-css" for="checkbox2">checkbox2</label>
+    </form>
+  </div>
+
+  <div>
+    <p>雪碧图实现</p>
+    <form action="">
+      <input id="radio3" type="radio" name="radio-sprit" value="">
+      <label class="radio-sprit" for="radio3">radio3</label>
+      <input id="radio4" type="radio" name="radio-sprit" value="">
+      <label class="radio-sprit" for="radio4">radio4</label>
+    </form>
+
+    <form action="">
+      <input id="checkbox3" type="checkbox" name="checkbox-sprit" value="">
+      <label class="checkbox-sprit" for="checkbox3">checkbox3</label>
+      <input id="checkbox4" type="checkbox" name="checkbox-sprit" value="">
+      <label class="checkbox-sprit" for="checkbox4">checkbox4</label>
+    </form>
+  </div>
+</body>
+</html>
