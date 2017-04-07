@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>鼠标悬浮渐变</title>
+  <style>
+    html,body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+    .blur {
+      width: 500px;
+      height: 250px;
+      position: absolute;
+      top: calc(50% - 125px);
+      left: calc(50% - 250px);
+      box-sizing: border-box;
+    }
+    .blur img {
+      position: absolute;
+      transition: all .5s;
+    }
+    .blur img:hover {
+      filter: blur(5px);
+    }
+    .blur .text {
+      width: 200px;
+      height: 100px;
+      top: calc(50% - 30px);
+      left: calc(50% - 100px);
+      position: absolute;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: all .5s;
+      background-image: linear-gradient(to right, #3498db, #f47920 10%, #d71345 20%, #f7acbc 30%, #ffd400 40%, #3498db 50%, #f47920 60%, #d71345 70%, #f7acbc 80%, #ffd400 90%, #3498db);
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text;
+      background-size: 200% 100%;
+      animation: masked 4s infinite linear;
+    }
+    @keyframes masked {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: -100% 0;
+      }
+    }
+    .blur img:hover+.text {
+      top: calc(50% - 50px);
+      opacity: 1;
+    }
+    .text::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 0;
+      height: 100%;
+      border: 3px solid white;
+      border-width: 3px 0;
+      transition: all .5s;
+      box-sizing: border-box;
+    }
+    .blur img:hover+.text::before {
+      width: 100%;
+      left: 0;
+    }
+    .text::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 0;
+      border: 3px solid white;
+      border-width: 0 3px;
+      transition: all .5s;
+      box-sizing: border-box;
+    }
+    .blur img:hover+.text::after {
+      height: 100%;
+      top: 0;
+    }
+  </style>
+</head>
+<body>
+    <div class="blur">
+      <img src="./background.jpg" alt="皮神">
+      <div class="text">
+        <p>欢迎你来到这里呀</p>
+        <p>点击查看</p>
+      </div>
+    </div>
+</body>
+</html>
