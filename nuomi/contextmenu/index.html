@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>自定义网页右键菜单</title>
+</head>
+<style>
+  .contextmenu {
+    padding: 10px;
+    display: inline-block;
+    border: 2px solid black;
+    cursor: pointer;
+  }
+  .my-menu {
+    position: absolute;
+    display: none;
+    width: 100px;
+    z-index: 1;
+    background-color: white;
+  }
+  .my-menu p {
+    margin: 0;
+    padding: 5px;
+    border: 1px solid black;
+  }
+</style>
+<body>
+  <p class="contextmenu">右键点我试试</p>
+  <div class="my-menu">
+    <p>这是第一个</p>
+    <p>这是第二个</p>
+    <p>这是第三个</p>
+    <p>这是第四个</p>
+    <p>这是第五个</p>
+  </div>
+  <script>
+    document.querySelector('.contextmenu').addEventListener('contextmenu', e => {
+      e.preventDefault()
+
+      let myMenu = document.querySelector('.my-menu')
+      myMenu.style.cssText='display: block;'
+      if (document.documentElement.clientWidth - e.pageX >= myMenu.offsetWidth) {
+        // 右侧有足够空间，菜单在右侧
+        myMenu.style.left = `${e.pageX}px`
+      } else if (e.pageX >= myMenu.offsetWidth) {
+        // 左侧有足够空间，菜单在左侧
+        myMenu.style.left = `${e.pageX - myMenu.offsetWidth}px`
+      } else {
+        // 否则对比左右两侧的宽度，争取展示更多内容
+        let left = e.left
+        let right = document.documentElement.clientWidth - e.pageX
+        if (left > right) {
+          myMenu.style.left = `${e.pageX - myMenu.offsetWidth}px`
+        } else {
+          myMenu.style.left = `${e.pageX}px`
+        }
+      }
+
+      if (document.documentElement.clientHeight - e.pageY >= myMenu.offsetHeight) {
+        // 下侧空足够空间，菜单在下侧
+        myMenu.style.top = `${e.pageY}px`
+      } else if (e.pageY >= myMenu.offsetHeight) {
+        // 上侧有足够空间，菜单在上侧
+        myMenu.style.top = `${e.pageY - myMenu.offsetHeight}px`
+      } else {
+        // 否则对比上下两侧的高度，争取展示更多内容
+        let top = e.pageY
+        let bottom = document.documentElement.clientHeight - e.pageY
+        if (top > bottom) {
+          myMenu.style.top = `${e.pageY - myMenu.offsetHeight}px`
+        } else {
+          myMenu.style.top = `${e.pageY}px`
+        }
+      }
+
+      document.body.addEventListener('click', removeContextmune, false)
+    })
+
+    function removeContextmune (e) {
+      if (!e.path.includes(document.querySelector('.my-menu'))) {
+        let myMenu = document.querySelector('.my-menu')
+        myMenu.style.cssText='display: none;'
+        document.body.removeEventListener('click', removeContextmune)
+      }
+    }
+  </script>
+</body>
+</html>
