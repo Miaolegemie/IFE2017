@@ -85,6 +85,15 @@
         document.body.removeEventListener('click', removeContextmune)
       }
     }
+
+    // 事件委托
+    document.querySelector('.my-menu').addEventListener('click', e => {
+      let nodeName = e.target.nodeName.toLocaleLowerCase()
+      if (nodeName === 'p') {
+        let text = e.target.innerText
+        alert(text)
+      }
+    })
   </script>
 </body>
 </html>
