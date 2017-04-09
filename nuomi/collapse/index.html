@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>使用CSS实现折叠面板</title>
+</head>
+<style>
+  a {
+    text-decoration: none;
+    color: black;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  .list {
+    height: 0;
+    visibility: hidden;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #ccc;
+    transition: visibility 0s .2s ease, height .2s ease, padding-top .2s ease, padding-bottom .2s ease, padding-left 0s .2s ease, padding-right 0s .2s ease;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .list:target {
+    height: 150px;
+    padding: 15px;
+    visibility: visible;
+    transition: visibility 0s ease, height .2s ease, padding-top .2s ease, padding-bottom .2s ease, padding-left 0s ease, padding-right 0s ease;;
+  }
+  h2 {
+    margin: 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #eee;
+  }
+
+  input {
+    display: none;
+  }
+  input:checked + label + .list {
+    height: 150px;
+    padding: 15px;
+    visibility: visible;
+    transition: visibility 0s ease, height .2s ease, padding-top .2s ease, padding-bottom .2s ease, padding-left 0s ease, padding-right 0s ease;;
+  }
+</style>
+<body>
+  <div>
+    <p>锚点实现</p>
+    <div class="target">
+      <a href="#target1">
+        <h2>
+          第一个标题
+        </h2>
+      </a>
+      <p id="target1" class="list">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. .2 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch .2 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      </p>
+    </div>
+    <div class="target">
+      <a href="#target2">
+        <h2>
+          第二个标题
+        </h2>
+      </a>
+      <p id="target2" class="list">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. .2 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch .2 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      </p>
+    </div>
+    <div class="target">
+      <a href="#target.2">
+        <h2>
+          第三个标题
+        </h2>
+      </a>
+      <p id="target.2" class="list">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. .2 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch .2 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      </p>
+    </div>
+  </div>
+
+  <div>
+    <p>使用 radio 实现</p>
+    <div class="radio">
+      <input type="radio" id="radio1" name="radio"><label for="radio1"><h2>第一个标题</h2></label>
+      <p class="list">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. .2 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch .2 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      </p>
+    </div>
+    <div class="radio">
+      <input type="radio" id="radio2" name="radio"><label for="radio2"><h2>第二个标题</h2></label>
+      <p class="list">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. .2 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch .2 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      </p>
+    </div>
+    <div class="radio">
+      <input type="radio" id="radio.2" name="radio"><label for="radio.2"><h2>第三个标题</h2></label>
+      <p class="list">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. .2 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch .2 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
