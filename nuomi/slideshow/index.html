@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>CSS3实现3D轮播图</title>
+  <style>
+    .slide {
+      width: 800px;
+      height: 600px;
+      margin: auto;
+      perspective: 800px;
+    }
+    .items {
+      transform-style: preserve-3d;
+      position: relative;
+      width: 800px;
+      height: 600px;
+      margin: auto;
+    }
+    .item {
+      position: absolute;
+      width: 250px;
+      left: 300px;
+      top: 300px;
+      transition: all .5s;
+    }
+    .items .item:nth-child(1) {
+      transform: rotateY(0deg) translateZ(400px);
+    }
+    .items .item:nth-child(2) {
+      transform: rotateY(40deg) translateZ(400px);
+    }
+    .items .item:nth-child(3) {
+      transform: rotateY(80deg) translateZ(400px);
+    }
+    .items .item:nth-child(4) {
+      transform: rotateY(120deg) translateZ(400px);
+    }
+    .items .item:nth-child(5) {
+      transform: rotateY(160deg) translateZ(400px);
+    }
+    .items .item:nth-child(6) {
+      transform: rotateY(200deg) translateZ(400px);
+    }
+    .items .item:nth-child(7) {
+      transform: rotateY(240deg) translateZ(400px);
+    }
+    .items .item:nth-child(8) {
+      transform: rotateY(280deg) translateZ(400px);
+    }
+    .items .item:nth-child(9) {
+      transform: rotateY(320deg) translateZ(400px);
+    }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="items">
+      <img class="item" src="./background.jpg" alt="皮卡丘">
+      <img class="item" src="./background.jpg" alt="皮卡丘">
+      <img class="item" src="./background.jpg" alt="皮卡丘">
+      <img class="item" src="./background.jpg" alt="皮卡丘">
+      <img class="item" src="./background.jpg" alt="皮卡丘">
+      <img class="item" src="./background.jpg" alt="皮卡丘">
+      <img class="item" src="./background.jpg" alt="皮卡丘">
+      <img class="item" src="./background.jpg" alt="皮卡丘">
+      <img class="item" src="./background.jpg" alt="皮卡丘">
+    </div>
+  </div>
+  <script>
+    let counter = 0
+    let elements = document.querySelectorAll('.item')
+
+    setInterval(slide, 2000)
+    function slide () {
+      elements.forEach((item, index) => {
+        item.style = `transform: rotateY(${40 * (index + 1 + counter)}deg) translateZ(400px);`
+      })
+      counter += 1
+    }
+  </script>
+</body>
+</html>
