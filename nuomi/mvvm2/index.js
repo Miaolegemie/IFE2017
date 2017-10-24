@@ -62,7 +62,7 @@ class event {
     }
   }
 
-  of (attr) {
+  off (attr) {
     for (let key in this.events) {
       if (this.events.hasOwnProperty(key) && key === attr) {
         delete this.events[key]
