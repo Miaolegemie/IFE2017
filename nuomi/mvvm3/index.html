@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>MVVM3</title>
+</head>
+
+<body>
+
+  <script src="./index.js"></script>
+  <script>
+    const app = new Observer({
+      name: 'youngwind',
+      age: 25
+    });
+    app.data.name = {
+      lastName: 'liang',
+      firstName: 'shaofeng'
+    };
+    //     var app =new Observer(data);
+    app.watch('name', function() {
+      console.log('我的姓名发生了变化，可能是姓氏变了，也可能是名字变了。');
+    })
+    app.data.name.firstName = 'hahaha';
+    // 输出：我的姓名发生了变化，可能是姓氏变了，也可能是名字变了。
+    app.data.name.lastName = 'blablabla';
+    // 输出：我的姓名发生了变化，可能是姓氏变了，也可能是名字变了。
+
+  </script>
+</body>
+
+</html>
